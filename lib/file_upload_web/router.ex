@@ -3,6 +3,7 @@ defmodule FileUploadWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :introspect
   end
 
   scope "/" do
@@ -29,6 +30,16 @@ defmodule FileUploadWeb.Router do
     scope "/" do
       pipe_through [:fetch_session, :protect_from_forgery]
       live_dashboard "/dashboard", metrics: FileUploadWeb.Telemetry
+    end
+
+    def introspect(conn, _opts) do
+      IO.puts("""
+      Verb: #{inspect(conn.method)}
+      Host: #{inspect(conn.host)}
+      Headers: #{inspect(conn.req_headers)}
+      """)
+
+      conn
     end
   end
 end
