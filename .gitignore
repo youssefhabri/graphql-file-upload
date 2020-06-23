@@ -29,3 +29,7 @@ file_upload-*.tar
 
 # ElixirLS folder
 /.elixir_ls/
+
+# Intellij stuff
+.idea
+*.iml
