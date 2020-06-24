@@ -12,8 +12,8 @@ defmodule FileUploadWeb.FileResolver do
 
     case File.exists?(file.path) do
       true ->
-        case add_file(args) do
-          {:ok, upload} -> move_file(file.path, upload)
+        case move_file(file) do
+          {:ok, file} -> add_file(file)
           {:error, reason} -> {:error, reason}
         end
 
@@ -22,32 +22,42 @@ defmodule FileUploadWeb.FileResolver do
     end
   end
 
-  def add_file(args) do
+  def add_file(file) do
     operation =
       Repo.insert(%Upload{
-        filename: args.file_data.filename,
-        content_type: args.file_data.content_type
+        filename: file.filename,
+        content_type: file.content_type
       })
 
     case operation do
       {:ok, upload} -> {:ok, upload}
-      {:error, _} -> {:error, "Failed to upload the file."}
+      {:error, _} -> {:error, "Failed to add the file to the database."}
     end
   end
 
-  def move_file(source, upload) do
+  def move_file(file) do
+    rand_id = Ecto.UUID.generate()
+    filename = "#{rand_id}-#{file.filename}"
+
     dest_path =
       Path.join([
         File.cwd!(),
         "priv",
         "static",
         "uploads",
-        "#{upload.id}-#{upload.filename}"
+        filename
       ])
 
-    case File.rename(source, dest_path) do
-      :ok -> {:ok, upload}
-      {:error, _} -> {:error, "Failed to upload the file"}
+    case File.rename(file.path, dest_path) do
+      :ok ->
+        {:ok,
+         %{
+           filename: filename,
+           content_type: file.content_type
+         }}
+
+      {:error, _} ->
+        {:error, "Failed to upload the file"}
     end
   end
 end

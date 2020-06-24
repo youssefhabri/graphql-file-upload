@@ -13,7 +13,7 @@ defmodule FileUploadWeb.Schema do
     field :url, :string do
       resolve(fn root, _args, _ ->
         base_url = FileUploadWeb.Endpoint.static_url()
-        url = "#{base_url}/uploads/#{root.id}-#{root.filename}"
+        url = "#{base_url}/uploads/#{root.filename}"
         {:ok, url}
       end)
     end
