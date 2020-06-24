@@ -48,16 +48,16 @@ defmodule FileUploadWeb.FileResolver do
         filename
       ])
 
-    case File.rename(file.path, dest_path) do
-      :ok ->
-        {:ok,
-         %{
-           filename: filename,
-           content_type: file.content_type
-         }}
+    case File.copy(file.path, dest_path) do
+      {:ok, _bytes} ->
+        {:ok, %{filename: filename, content_type: file.content_type}}
 
-      {:error, _} ->
-        {:error, "Failed to upload the file"}
+      {:error, reason} ->
+        if Mix.env() in [:dev, :test] do
+          {:error, "Failed to upload the file: #{reason}"}
+        else
+          {:error, "Failed to upload the file"}
+        end
     end
   end
 end
