@@ -1,15 +1,18 @@
 defmodule FileUploadWeb.Router do
   use FileUploadWeb, :router
 
+  graphql_path = "/graphql"
+
   pipeline :api do
     plug :accepts, ["json"]
     plug :introspect
+    plug FileUploadWeb.Plugs.UploadSpecPlug, path: graphql_path
   end
 
   scope "/" do
     pipe_through :api
 
-    forward "/graphql", Absinthe.Plug, schema: FileUploadWeb.Schema
+    forward graphql_path, Absinthe.Plug, schema: FileUploadWeb.Schema
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: FileUploadWeb.Schema,
@@ -43,3 +46,10 @@ defmodule FileUploadWeb.Router do
     end
   end
 end
+
+# %{"0" => ["variables.file"]}
+
+# %{
+#   "query" => "mutation ($file: Upload!) { uploadFile(file: $file) }",
+#   "variables" => %{"file" => nil}
+# }
