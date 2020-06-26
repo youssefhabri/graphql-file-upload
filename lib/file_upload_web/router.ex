@@ -46,10 +46,3 @@ defmodule FileUploadWeb.Router do
     end
   end
 end
-
-# %{"0" => ["variables.file"]}
-
-# %{
-#   "query" => "mutation ($file: Upload!) { uploadFile(file: $file) }",
-#   "variables" => %{"file" => nil}
-# }
