@@ -1,4 +1,9 @@
 defmodule FileUploadWeb.Plugs.UploadSpecPlug do
+  @moduledoc """
+  This Plug is meant to map requests, that use the graphql
+  multipart request spec to upload files, to Absinthe's upload format
+  """
+
   # import Plug.Conn
 
   def init(options) do
