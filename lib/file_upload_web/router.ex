@@ -5,8 +5,11 @@ defmodule FileUploadWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :introspect
     plug FileUploadWeb.Plugs.UploadSpecPlug, path: graphql_path
+
+    if Mix.env() in [:dev, :test] do
+      plug :introspect
+    end
   end
 
   scope "/" do
