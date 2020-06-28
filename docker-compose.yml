@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  graphql-file-upload:
+    build:
+      context: .
+      dockerfile: DOCKERFILE
+    container_name: elixir-graphql-file-upload
+    network_mode: "bridge"
+    ports:
+      - 4000:4000
+    restart: always

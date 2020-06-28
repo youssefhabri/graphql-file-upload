@@ -1,0 +1,12 @@
+FROM elixir:latest
+
+ADD . /usr/src/app 
+
+WORKDIR /usr/src/app
+
+RUN mix do local.hex --force, local.rebar --force, deps.get
+RUN mix ecto.setup
+
+EXPOSE 4000 4000
+
+ENTRYPOINT mix phx.server
